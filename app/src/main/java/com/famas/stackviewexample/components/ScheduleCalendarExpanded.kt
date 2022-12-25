@@ -30,7 +30,14 @@ import com.famas.stackviewexample.ui.theme.SpaceSemiSmall
 import com.famas.stackviewexample.ui.theme.SpaceVerySmall
 
 @Composable
-fun ScheduleCalendarExpanded() {
+fun ScheduleCalendarExpanded(
+    selectedTimeChipIndex: Int?,
+    selectedStartDateIndex: Int?,
+    selectedEndDateIndex: Int?,
+    setSelectedTimeChipIndex: (Int?) -> Unit,
+    setSelectedStartDateIndex: (Int?) -> Unit,
+    setSelectedEndDateIndex: (Int?) -> Unit,
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -96,7 +103,7 @@ fun ScheduleCalendarExpanded() {
         Divider(modifier = Modifier.padding(vertical = SpaceLarge))
 
         Text(
-            text = "Trip Calendar",
+            text = "Dummy Calendar",
             fontSize = 24.0
                 .sp,
             fontWeight = FontWeight.Bold,
@@ -104,6 +111,13 @@ fun ScheduleCalendarExpanded() {
             textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.height(SpaceLarge))
-        Calendar()
+        Calendar(
+            selectedTimeChipIndex,
+            selectedStartDateIndex,
+            selectedEndDateIndex,
+            setSelectedTimeChipIndex,
+            setSelectedStartDateIndex,
+            setSelectedEndDateIndex
+        )
     }
 }

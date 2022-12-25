@@ -11,6 +11,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -27,11 +28,29 @@ import com.famas.stackviewexample.ui.theme.SpaceSemiSmall
 import com.famas.stackviewexample.ui.theme.SpaceSmall
 
 @Composable
-fun ScheduleCalendarCollapse(modifier: Modifier = Modifier) {
+fun ScheduleCalendarCollapse(
+    selectedStartDateIndex: Int?,
+    selectedEndDateIndex: Int?,
+    selectedTimeChipIndex: Int?,
+    modifier: Modifier = Modifier
+) {
+    val dates = remember {
+        dates()
+    }
     Column(modifier = modifier) {
-        Row(modifier = Modifier.padding(horizontal = SpaceLarge * 1.5f).padding(top = SpaceLarge), horizontalArrangement = Arrangement.SpaceBetween) {
+        Row(
+            modifier = Modifier
+                .padding(horizontal = SpaceLarge * 1.5f)
+                .padding(top = SpaceLarge),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
             Row(verticalAlignment = Alignment.Top) {
-                Icon(painter = painterResource(id = R.drawable.from), contentDescription = null, tint = MaterialTheme.colors.primary, modifier = Modifier.padding(top = SpaceSmall))
+                Icon(
+                    painter = painterResource(id = R.drawable.from),
+                    contentDescription = null,
+                    tint = MaterialTheme.colors.primary,
+                    modifier = Modifier.padding(top = SpaceSmall)
+                )
                 Column(modifier = Modifier.padding(start = SpaceSemiLarge)) {
                     Text(text = buildAnnotatedString {
                         pushStyle(
@@ -88,26 +107,53 @@ fun ScheduleCalendarCollapse(modifier: Modifier = Modifier) {
         }
 
         Divider(modifier = Modifier.padding(vertical = SpaceLarge))
-        
+
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier.fillMaxWidth().padding(horizontal = SpaceLarge * 2f),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = SpaceLarge * 2f)
+                .padding(top = SpaceSmall),
         ) {
             Text(text = buildAnnotatedString {
-                pushStyle(SpanStyle(color = ColorOnSurfaceVariant, fontSize = 12.sp, fontWeight = FontWeight.SemiBold))
-                append("DATE:")
+                pushStyle(
+                    SpanStyle(
+                        color = ColorOnSurfaceVariant,
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                )
+                append("DATE: ")
                 pop()
-                pushStyle(SpanStyle(color = MaterialTheme.colors.onSurface, fontSize = 12.sp, fontWeight = FontWeight.SemiBold))
-                append("FEB 15 - FEB 24")
+                pushStyle(
+                    SpanStyle(
+                        color = MaterialTheme.colors.onSurface,
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                )
+                append("FEB ${dates[selectedStartDateIndex ?: 0].number} - FEB ${dates[selectedEndDateIndex ?: 0].number}")
             })
 
             Text(text = buildAnnotatedString {
-                pushStyle(SpanStyle(color = ColorOnSurfaceVariant, fontSize = 12.sp, fontWeight = FontWeight.SemiBold))
-                append("TIME:")
+                pushStyle(
+                    SpanStyle(
+                        color = ColorOnSurfaceVariant,
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                )
+                append("TIME: ")
                 pop()
-                pushStyle(SpanStyle(color = MaterialTheme.colors.onSurface, fontSize = 12.sp, fontWeight = FontWeight.SemiBold))
-                append("12:30 PM")
+                pushStyle(
+                    SpanStyle(
+                        color = MaterialTheme.colors.onSurface,
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                )
+                append(timeSlots[selectedTimeChipIndex ?: 0])
             })
         }
     }

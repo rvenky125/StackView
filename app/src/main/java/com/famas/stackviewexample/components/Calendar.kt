@@ -1,6 +1,10 @@
 package com.famas.stackviewexample.components
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,6 +16,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
@@ -42,22 +47,21 @@ import com.famas.stackviewexample.ui.theme.SpaceSemiLarge
 import com.famas.stackviewexample.ui.theme.SpaceSemiSmall
 import com.famas.stackviewexample.ui.theme.SpaceSmall
 
+val dates = {
+    val enabled = (1..29).toList().map { Date(enabled = true, it) }
+    val disabled = (1..4).toList().map { Date(enabled = false, it) }
+    listOf(Date(enabled = false, 30), Date(enabled = false, 31)).plus(enabled).plus(disabled)
+}
+
+val timeSlots = listOf("05:00 AM", "12:30 AM", "06:00 AM", "09:00 AM")
+
 @Composable
-fun Calendar() {
-    val dates = remember {
-        val enabled = (1..29).toList().map { Date(enabled = true, it) }
-        val disabled = (1..4).toList().map { Date(enabled = false, it) }
-        listOf(Date(enabled = false, 30), Date(enabled = false, 31)).plus(enabled).plus(disabled)
-    }
-
-    val timeSlots = remember {
-        listOf("05:00 AM", "12:30 AM", "06:00 AM", "09:00 AN")
-    }
-
-    var selectedTimeChipIndex by remember {
-        mutableStateOf<Int?>(null)
-    }
-
+fun Calendar(
+    selectedTimeChipIndex: Int?, selectedStartDateIndex: Int?, selectedEndDateIndex: Int?,
+    setSelectedTimeChipIndex: (Int?) -> Unit,
+    setSelectedStartDateIndex: (Int?) -> Unit,
+    setSelectedEndDateIndex: (Int?) -> Unit,
+) {
     Column {
         Row(
             modifier = Modifier
@@ -70,7 +74,12 @@ fun Calendar() {
                 horizontalArrangement = Arrangement.SpaceAround,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = "JANUARY", fontSize = 12.sp, color = ColorOnSurfaceVariant)
+                Text(
+                    text = "JANUARY",
+                    fontSize = 12.sp,
+                    color = ColorOnSurfaceVariant,
+                    fontWeight = FontWeight.SemiBold
+                )
                 Text(
                     text = "FEBRUARY",
                     fontSize = 12.sp,
@@ -80,8 +89,8 @@ fun Calendar() {
                         .background(MaterialTheme.colors.primary)
                         .padding(
                             SpaceSemiSmall
-                        )
-
+                        ),
+                    fontWeight = FontWeight.SemiBold
                 )
                 Text(text = "MARCH", fontSize = 12.sp, color = ColorOnSurfaceVariant)
             }
@@ -102,17 +111,46 @@ fun Calendar() {
             verticalArrangement = Arrangement.SpaceBetween,
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
-            items(dates) {
-                Text(
-                    text = it.number.toString(),
+            itemsIndexed(dates()) { i, it ->
+                val animatedBgColor = animateColorAsState(
+                    targetValue = if (i in (selectedStartDateIndex ?: -1)..(selectedEndDateIndex
+                            ?: selectedStartDateIndex ?: -1)
+                    ) MaterialTheme.colors.primary else MaterialTheme.colors.background
+                )
+
+                val animatedCorner = animateDpAsState(
+                    targetValue = if (i == selectedStartDateIndex || i == selectedEndDateIndex) SpaceLarge else 0.dp
+                )
+
+                Text(text = it.number.toString(),
                     color = if (it.enabled) MaterialTheme.colors.onSurface else ColorOnSurfaceVariant.copy(
                         alpha = 0.6f
                     ),
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(bottom = SpaceSemiLarge, top = SpaceMedium),
+                    modifier = Modifier
+                        .padding(vertical = SpaceSmall)
+                        .clickable(it.enabled) {
+                            if (selectedStartDateIndex == null) {
+                                setSelectedStartDateIndex(i)
+                            } else if (selectedEndDateIndex == null) {
+                                setSelectedEndDateIndex(i)
+                            } else {
+                                setSelectedStartDateIndex(i)
+                                setSelectedEndDateIndex(null)
+                            }
+                        }
+                        .clip(
+                            RoundedCornerShape(
+                                topStart = if (selectedStartDateIndex == i) animatedCorner.value else 0.dp,
+                                topEnd = if (selectedEndDateIndex == i) animatedCorner.value else 0.dp,
+                                bottomEnd = if (selectedEndDateIndex == i) animatedCorner.value else 0.dp,
+                                bottomStart = if (selectedStartDateIndex == i) animatedCorner.value else 0.dp
+                            )
+                        )
+                        .background(color = animatedBgColor.value)
+                        .padding(SpaceSemiSmall),
                     fontSize = 15.sp,
-                    fontWeight = FontWeight.Medium
-                )
+                    fontWeight = FontWeight.Medium)
             }
         }
 
@@ -139,9 +177,10 @@ fun Calendar() {
                     modifier = Modifier.padding(end = SpaceLarge),
                     enabled = selectedTimeChipIndex == i
                 ) {
-                    selectedTimeChipIndex = if (selectedTimeChipIndex == i) {
+                    val index = if (selectedTimeChipIndex == i) {
                         null
                     } else i
+                    setSelectedTimeChipIndex(index)
                 }
             }
         }
@@ -155,7 +194,7 @@ fun TimeChip(
     modifier: Modifier = Modifier,
     enabled: Boolean = false,
     onClick: () -> Unit,
-    ) {
+) {
     Surface(
         color = if (enabled) MaterialTheme.colors.primary else ColorSurfaceDisabled,
         shape = RoundedCornerShape(
@@ -175,16 +214,6 @@ fun TimeChip(
     }
 }
 
-
 data class Date(
-    val enabled: Boolean,
-    val number: Int
+    val enabled: Boolean, val number: Int
 )
-
-
-//@Composable
-//fun MontChip(
-//
-//) {
-//
-//}
