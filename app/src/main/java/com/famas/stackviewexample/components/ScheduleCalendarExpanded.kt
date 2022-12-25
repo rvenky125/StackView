@@ -2,6 +2,9 @@ package com.famas.stackviewexample.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.scrollable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -9,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -22,6 +26,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import com.famas.stackviewexample.R
+import com.famas.stackviewexample.getScreenSize
 import com.famas.stackviewexample.ui.theme.ColorOnSurfaceVariant
 import com.famas.stackviewexample.ui.theme.SpaceLarge
 import com.famas.stackviewexample.ui.theme.SpaceMedium
@@ -38,11 +43,12 @@ fun ScheduleCalendarExpanded(
     setSelectedStartDateIndex: (Int?) -> Unit,
     setSelectedEndDateIndex: (Int?) -> Unit,
 ) {
+    val size = getScreenSize()
     Column(
         modifier = Modifier
             .fillMaxSize()
     ) {
-        Column(modifier = Modifier.padding(horizontal = SpaceLarge * 1.5f, vertical = SpaceLarge)) {
+        Column(modifier = Modifier.padding(horizontal = SpaceLarge * 1.5f, vertical = size.height * 0.01f)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 FromIcon(modifier = Modifier.padding(top = SpaceLarge))
                 Column(modifier = Modifier.padding(start = SpaceSemiLarge)) {
@@ -100,17 +106,16 @@ fun ScheduleCalendarExpanded(
             }
         }
 
-        Divider(modifier = Modifier.padding(vertical = SpaceLarge))
+        Divider(modifier = Modifier.padding(vertical = size.height * 0.015f))
 
         Text(
             text = "Dummy Calendar",
-            fontSize = 24.0
-                .sp,
+            fontSize = 24.0.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center
         )
-        Spacer(modifier = Modifier.height(SpaceLarge))
+        Spacer(modifier = Modifier.height(size.height * 0.015f))
         Calendar(
             selectedTimeChipIndex,
             selectedStartDateIndex,

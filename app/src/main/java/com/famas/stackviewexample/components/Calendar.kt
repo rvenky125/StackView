@@ -39,6 +39,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.famas.stackviewexample.getScreenSize
 import com.famas.stackviewexample.ui.theme.ColorOnSurfaceVariant
 import com.famas.stackviewexample.ui.theme.ColorSurfaceDisabled
 import com.famas.stackviewexample.ui.theme.SpaceLarge
@@ -62,6 +63,8 @@ fun Calendar(
     setSelectedStartDateIndex: (Int?) -> Unit,
     setSelectedEndDateIndex: (Int?) -> Unit,
 ) {
+    val size = getScreenSize()
+
     Column {
         Row(
             modifier = Modifier
@@ -160,7 +163,7 @@ fun Calendar(
             fontWeight = FontWeight.Bold,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = SpaceSemiSmall),
+                .padding(top = size.height * 0.01f),
             textAlign = TextAlign.Center,
             lineHeight = 18.sp
         )
@@ -169,7 +172,7 @@ fun Calendar(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 30.dp)
-                .padding(top = SpaceMedium)
+                .padding(top = size.height * 0.01f)
         ) {
             itemsIndexed(timeSlots) { i, str ->
                 TimeChip(

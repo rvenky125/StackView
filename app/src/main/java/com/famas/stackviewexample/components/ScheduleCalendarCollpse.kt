@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
@@ -20,12 +21,14 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.famas.stackviewexample.R
+import com.famas.stackviewexample.getScreenSize
 import com.famas.stackviewexample.ui.theme.ColorOnSurfaceVariant
 import com.famas.stackviewexample.ui.theme.SpaceLarge
 import com.famas.stackviewexample.ui.theme.SpaceMedium
 import com.famas.stackviewexample.ui.theme.SpaceSemiLarge
 import com.famas.stackviewexample.ui.theme.SpaceSemiSmall
 import com.famas.stackviewexample.ui.theme.SpaceSmall
+import com.famas.stackviewexample.ui.theme.SpaceVerySmall
 
 @Composable
 fun ScheduleCalendarCollapse(
@@ -37,14 +40,19 @@ fun ScheduleCalendarCollapse(
     val dates = remember {
         dates()
     }
-    Column(modifier = modifier) {
+    val size = getScreenSize()
+    Column(modifier = modifier.height(size.height * 0.2f)) {
         Row(
             modifier = Modifier
-                .padding(horizontal = SpaceLarge * 1.5f)
+                .fillMaxWidth()
+                .padding(horizontal = SpaceLarge)
                 .padding(top = SpaceLarge),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Row(verticalAlignment = Alignment.Top) {
+            Row(
+                verticalAlignment = Alignment.Top, modifier = Modifier
+                    .weight(0.5f)
+            ) {
                 Icon(
                     painter = painterResource(id = R.drawable.from),
                     contentDescription = null,
@@ -75,13 +83,15 @@ fun ScheduleCalendarCollapse(
                 }
             }
 
-            Row(modifier = Modifier.padding(start = SpaceLarge * 2)) {
+            Row(modifier = Modifier
+                .padding(start = SpaceSemiSmall)
+                .weight(0.5f)) {
                 Image(
                     painter = painterResource(id = R.drawable.to),
                     contentDescription = null,
                     modifier = Modifier.padding(top = SpaceSemiSmall)
                 )
-                Column(modifier = Modifier.padding(start = SpaceSemiLarge)) {
+                Column(modifier = Modifier.padding(start = SpaceVerySmall)) {
                     Text(text = buildAnnotatedString {
                         pushStyle(
                             SpanStyle(
@@ -106,7 +116,7 @@ fun ScheduleCalendarCollapse(
             }
         }
 
-        Divider(modifier = Modifier.padding(vertical = SpaceLarge))
+        Divider(modifier = Modifier.padding(vertical = size.width * 0.02f))
 
         Row(
             verticalAlignment = Alignment.CenterVertically,

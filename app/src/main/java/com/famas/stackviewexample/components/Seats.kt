@@ -1,5 +1,6 @@
 package com.famas.stackviewexample.components
 
+import android.util.Log
 import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -25,6 +26,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.lerp
 import androidx.compose.ui.unit.sp
+import com.famas.stackviewexample.getScreenSize
 import com.famas.stackviewexample.ui.theme.SpaceLarge
 import com.famas.stackviewexample.ui.theme.SpaceSemiLarge
 import com.famas.stackviewexample.ui.theme.SpaceSmall
@@ -49,12 +51,18 @@ fun SeatsExpand(
         (1..4).toList()
     }
 
+    val screenSize = getScreenSize()
+
     val fontSize = remember {
-        Animatable(200f)
+        Animatable(screenSize.width.value * 0.1f)
     }
 
+    LaunchedEffect(key1 = screenSize, block = {
+        Log.d("myTag", screenSize.toString())
+    })
+
     LaunchedEffect(key1 = isChildrenExist, block = {
-        fontSize.animateTo(if (isChildrenExist) 100f else 200f)
+        fontSize.animateTo(if (isChildrenExist) screenSize.width.value * 0.25f else screenSize.width.value * 0.5f)
     })
 
     Column(modifier = Modifier.padding(vertical = SpaceLarge)) {
@@ -80,7 +88,7 @@ fun SeatsExpand(
         HorizontalPager(
             count = numbers.size,
             modifier = Modifier.fillMaxWidth(),
-            contentPadding = PaddingValues(horizontal = SpaceLarge * 7),
+            contentPadding = PaddingValues(horizontal = screenSize.width * 0.35f),
             state = adultsPagerState
         ) { page ->
             Text(
@@ -114,7 +122,7 @@ fun SeatsExpand(
             HorizontalPager(
                 count = numbers.size,
                 modifier = Modifier.fillMaxWidth(),
-                contentPadding = PaddingValues(horizontal = SpaceLarge * 7),
+                contentPadding = PaddingValues(horizontal = screenSize.width * 0.35f),
                 state = childrenPagerState
             ) { page ->
                 Text(
