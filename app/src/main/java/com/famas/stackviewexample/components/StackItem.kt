@@ -1,7 +1,12 @@
 package com.famas.stackviewexample.components
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -10,6 +15,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
@@ -62,11 +68,16 @@ fun StackItemCard(
         shape = shape,
         color = animatedColor
     ) {
-        if (expandedIndex == index) {
+        val enter = remember {
+            fadeIn() + slideInVertically(initialOffsetY = { it / 2}, animationSpec = tween(durationMillis = 700))
+        }
+        AnimatedVisibility(visible = expandedIndex == index, enter = enter) {
             cardExpandContent()
-        } else if (expandedIndex < index) {
+        }
+        AnimatedVisibility(visible = expandedIndex < index, enter = enter) {
             cardHeader()
-        } else {
+        }
+        AnimatedVisibility(visible = expandedIndex > index, enter = enter) {
             cardCollapseContent()
         }
     }

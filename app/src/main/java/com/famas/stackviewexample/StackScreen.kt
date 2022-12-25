@@ -112,7 +112,6 @@ fun StackLt(
                 )
             },
             cardHeader = {
-
             },
             onTap = {
                 setExpandedCardIndex(0)
